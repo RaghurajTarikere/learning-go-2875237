@@ -1,36 +1,34 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"io"
+	"os"
 )
 
 func main() {
-	poodle := Dog{"Poodle", 10, "Woof!"}
-	fmt.Println(poodle)
-	fmt.Printf("%+v\n", poodle)
-	fmt.Printf("Breed: %v\nWeight: %v\n", poodle.Breed, poodle.Weight)
-
-	poodle.Speak()
-	poodle.Sound = "Arf!"
-	poodle.Speak()
-	poodle.SpeakThreeTimes()
-	poodle.SpeakThreeTimes()
+	reader := bufio.NewReader(os.Stdin)
+	fmt.Println("Enter data to be written in file")
+	content, err := reader.ReadString('\n')
+	checkErr(err)
+	file, err := os.Create("./FromString.txt")
+	checkErr(err)
+	length, err := io.WriteString(file, content)
+	checkErr(err)
+	fmt.Printf("Wrote %v characters to a file \n", length)
+	defer file.Close()
+	defer readFile("./FromString.txt")
 }
 
-// Dog is a struct
-type Dog struct {
-	Breed  string
-	Weight int
-	Sound  string
+func readFile(path string) {
+	data, err := os.ReadFile(path)
+	checkErr(err)
+	fmt.Println("Read data is:", string(data))
 }
 
-// Speak is how the dog speaks
-func (d Dog) Speak() {
-	fmt.Println(d.Sound)
-}
-
-// SpeakThreeTimes is how the dog speaks loudly
-func (d Dog) SpeakThreeTimes() {
-	d.Sound = fmt.Sprintf("%v %v %v", d.Sound, d.Sound, d.Sound)
-	fmt.Println(d.Sound)
+func checkErr(err error) {
+	if err != nil {
+		panic(err)
+	}
 }
