@@ -70,5 +70,8 @@ func decodeFromJson(content string) []Tour {
 		tours = append(tours, tour)
 	}
 
+	// Single line alternative:
+	// json.Unmarshal([]byte(content), &tours)
+
 	return tours
 }
